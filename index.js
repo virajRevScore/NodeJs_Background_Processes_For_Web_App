@@ -1,23 +1,32 @@
 const express = require("express");
 const session = require("express-session");
 const dotenv = require("dotenv").config();
-const routes = require("../routes/index");
+const uuid = require('uuid')
+const routes = require("./routes/index");
+const cookieParser = require('cookie-parser');
+const mongoose = require('mongoose');
+const {MongoClient} = require('mongodb')
+
+
+const sessionStore = new session.MemoryStore() // not for prod . used only for dev env. need to figure out a session store for prod
 
 const app = express();
-
+app.use(cookieParser())
 app.use(
   session({
+    
     secret: Math.random().toString(36).substring(2),
     resave: false,
     saveUninitialized: true,
+    store : sessionStore
   })
 );
+
 
 app.get("/", async (req, res) => {
   res.setHeader("Content-Type", "text/html");
   res.write(`<h2>HubSpot OAuth 2.0 Quickstart App</h2>`);
- 
-  
+
   res.end();
 });
 

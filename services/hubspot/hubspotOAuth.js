@@ -1,8 +1,7 @@
 require("dotenv").config();
 const express = require("express");
-const open = require("opn");
 
-const helper = require("../helpers/hubspot.OAuth.helper");
+const helper = require("../../helpers/hubspot/hubspot.OAuth.helper");
 
 if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET) {
   throw new Error("Missing CLIENT_ID or CLIENT_SECRET environment variable.");
@@ -55,4 +54,11 @@ exports.refreshAccessToken = async (
     refresh_token: refreshToken,
   };
   return await helper.exchangeForTokens(userId, refreshTokenProof);
+};
+
+exports.getAccessToken = async (userId , refreshToken) => {
+
+ 
+  await this.refreshAccessToken(userId , CLIENT_ID , CLIENT_SECRET , REDIRECT_URI , refreshToken)
+
 };

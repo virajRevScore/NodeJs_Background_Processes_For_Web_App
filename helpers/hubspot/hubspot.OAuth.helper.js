@@ -1,5 +1,8 @@
 const axios = require("axios");
 var querystring = require("querystring");
+// const { refreshAccessToken } = require("../../services/hubspot/hubspotOAuth");
+
+
 
 exports.exchangeForTokens = async (userId, exchangeProof) => {
   try {
@@ -27,15 +30,12 @@ exports.exchangeForTokens = async (userId, exchangeProof) => {
 
 
 
-exports.getAccessToken = async (userId) => {
-  // If the access token has expired, retrieve
-  // a new one using the refresh token
-  if (!accessTokenCache.get(userId)) {
-    console.log("Refreshing expired access token");
-    await refreshAccessToken(userId);
-  }
-  return accessTokenCache.get(userId);
-};
+// exports.getAccessToken = async (userId) => {
+
+ 
+//     await refreshAccessToken(userId);
+ 
+// };
 
 exports.isAuthorized = (userId) => {
   return refreshTokenStore[userId] ? true : false;

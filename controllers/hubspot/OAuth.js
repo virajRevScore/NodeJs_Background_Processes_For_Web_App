@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const { MongoClient, ServerApiVersion } = require("mongodb");
 const mongoDB = require("mongodb");
 require("dotenv").config();
-const { authUrl, handleOAuthCallback , refreshAccessToken } = require("../../services/hubspotOAuth");
+const { authUrl, handleOAuthCallback , refreshAccessToken } = require("../../services/hubspot/hubspotOAuth");
 const { con, connect } = require("../../database/mongoDB/connection");
 
 

@@ -1,0 +1,13 @@
+{
+    "crm": [
+        {
+            "hubspotCRMCompanies": "https://api.hubapi.com/crm/v3/objects/companies?limit=100&archived=false"
+        },
+        {
+            "hubspotCRMContacts" : "https://api.hubapi.com/crm/v3/objects/contacts?limit=100&archived=false"
+        },
+        {
+            "hubspotCRMDeals" : "https://api.hubapi.com/crm/v3/objects/deals?limit=100&archived=false"
+        }
+    ]
+}

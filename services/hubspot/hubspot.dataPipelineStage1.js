@@ -76,18 +76,19 @@ exports.extractHubspotCRMData = async (userId) => {
                 console.log("!!!!!errorxxxxxxxxxxxxxMESSAGE!!!!!============" , JSON.stringify(error?.message))
                 console.log("!!!!!errorxxxxxxxxxxxxxCAUSE!!!!!============" , JSON.stringify(error?.cause))
                 console.log("!!!!!errorRESPONSESTATUS!!!!!============" , JSON.stringify(error?.response?.status))
-                console.log("!!!!!errorREQUEST!!!!!============" , JSON.stringify(error?.request))
-                console.log("!!!!!errorRESPONSESTATUS!!!!!============" , JSON.stringify(error?.request?.status))
+                // console.log("!!!!!errorREQUEST!!!!!============" , JSON.stringify(error?.request))
+                // console.log("!!!!!errorRESPONSESTATUS!!!!!============" , JSON.stringify(error?.request?.status))
                 
-                if (JSON.stringify(error.response.status) == '401') {
+                if ( JSON.stringify(error.response.status) && JSON.stringify(error.response.status) == '401') {
                     
                         const newTokens = await getAccessToken(
                             userId,
                             refreshToken
                         );
                         console.log("------refreshing tokens --------------");
+                        console.log("////////NEW TOKENS||||||||||||" , newTokens)
 
-                        authToken = newTokens.access_token
+                        authToken = newTokens["access_token"]
                         await collection.updateOne(
                             { "userId": userId },
                             { "$set": { userId: userId, Hubspot: newTokens } },

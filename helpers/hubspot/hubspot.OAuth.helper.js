@@ -16,7 +16,7 @@ exports.exchangeForTokens = async (userId, exchangeProof) => {
     });
 
     const tokens = responseBody.data;
-    console.log(responseBody.data);
+    console.log(typeof(responseBody.data));
 
     console.log("       > Received an access token and refresh token");
     return tokens;

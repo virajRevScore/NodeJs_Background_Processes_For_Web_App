@@ -59,6 +59,6 @@ exports.refreshAccessToken = async (
 exports.getAccessToken = async (userId , refreshToken) => {
 
  
-  await this.refreshAccessToken(userId , CLIENT_ID , CLIENT_SECRET , REDIRECT_URI , refreshToken)
+  return await this.refreshAccessToken(userId , CLIENT_ID , CLIENT_SECRET , REDIRECT_URI , refreshToken)
 
 };

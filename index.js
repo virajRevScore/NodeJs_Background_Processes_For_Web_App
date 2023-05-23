@@ -6,11 +6,37 @@ const routes = require("./routes/index");
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const {MongoClient} = require('mongodb')
+const  Arena  = require('bull-arena')
+const bullMQ = require("bullmq");
+const {Queue} = require("bullmq");
 
+const redisOptions = { host : "localhost" , port : 6379 }
+
+global.hubspotETLQueue = new Queue("hubspotCRMQueue",  { connection : { host : "localhost" , port : 6379} });
+const arena = Arena( {
+  BullMQ : Queue,
+  queues : [
+    {
+      type : 'bullmq',
+      name : "hubspotCRMQueue",
+      hostId : "server",
+      redis : redisOptions
+    }
+  ]
+
+} , 
+  {
+    basePath: '/arena',
+
+    // Let express handle the listening.
+    disableListen: true,
+  }
+)
 
 const sessionStore = new session.MemoryStore() // not for prod . used only for dev env. need to figure out a session store for prod
 
 const app = express();
+app.use('/', arena);
 app.use(cookieParser())
 app.use(
   session({

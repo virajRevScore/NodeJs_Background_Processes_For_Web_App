@@ -74,7 +74,7 @@ const processJob = async (job, done) => {
         }
     }
 }
-const hubspotWorker = new Worker("hubspotCRMQueue" , processJob , {
+const hubspotWorker = new Worker("hubspotCRMQueue" , processJob ,{
     connection : { port: process.env.REDIS_PORT, host: process.env.REDIS_HOST }
   })
 

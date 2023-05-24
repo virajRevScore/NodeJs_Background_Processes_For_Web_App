@@ -1,8 +1,8 @@
 const router = require('express').Router()
 
 
-const hubspotOAuthController = require('../controllers/hubspot/OAuth')
-const hubspotETLController = require('../controllers/hubspot/ETL')
+const hubspotOAuthController = require('../controllers/hubspot/oauth')
+const hubspotETLController = require('../controllers/hubspot/etl')
 
 //OAuth------------------------------
 

@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const hubSpotRoutes = require('./Hubspot.routes')
+const hubSpotRoutes = require('./hubspot.routes')
 
 router.use('/onboarding' , hubSpotRoutes)
 

@@ -8,7 +8,7 @@ const hubspotETLController = require('../controllers/hubspot/ETL')
 
 router.get('/hubspotIntegration'  ,  hubspotOAuthController.getAuth)
 router.get('/hubspotOAuthCallback' , hubspotOAuthController.createAccessTokenFromHubspotCallback)
-router.get('/hubspotRrefreshToken' , hubspotOAuthController.getRefreshedToken)
+router.get('/hubspotRefreshToken' , hubspotOAuthController.getRefreshedToken)
 
 //OAuth------------------------------
 //DataPipeline --- Hubspot to mongoDB

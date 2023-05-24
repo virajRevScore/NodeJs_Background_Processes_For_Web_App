@@ -3,7 +3,7 @@ const {Queue} = require('bullmq')
 
 const jobOptions = {
     // jobId, uncoment this line if your want unique jobid
-    removeOnComplete: true, // remove job if complete
+    removeOnComplete: false, // remove job if complete
     delay: 600, // 1 = 60000 min in ms
     attempts: 3 // attempt if job is error retry 3 times
 };

@@ -1,9 +1,6 @@
-/.env
-/node_modules
-
+.idea/
+.vscode/
 node_modules/
-
-node_modules
-
-.env
-
+build/
+tmp/
+temp/

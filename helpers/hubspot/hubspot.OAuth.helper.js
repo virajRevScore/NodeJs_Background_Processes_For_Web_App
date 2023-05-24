@@ -29,14 +29,6 @@ exports.exchangeForTokens = async (userId, exchangeProof) => {
 };
 
 
-
-// exports.getAccessToken = async (userId) => {
-
- 
-//     await refreshAccessToken(userId);
- 
-// };
-
 exports.isAuthorized = (userId) => {
   return refreshTokenStore[userId] ? true : false;
 };

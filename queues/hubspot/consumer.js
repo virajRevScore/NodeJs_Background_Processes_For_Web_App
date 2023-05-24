@@ -1,33 +1,37 @@
-const { Queue, Worker, Job } = require("bullmq");
-const Redis = require("ioredis");
+
+const { handlerFailure, handlerCompleted, handlerStalled } = require('./handler')
+
+const path = require('path')
+const axios = require('axios')
+
 const { con, connect } = require("../../database/mongoDB/connection");
 const {
     getAccessToken,
-} = require("../../services/hubspot/hubspot.OAuth.helper");
+} = require('../../services/hubspot/hubspotOAuth.js');
 
-const redis = new Redis();
 
-const hubspotETLWorker = new Worker(
-    "hubspotCRMQueue",
-    hubspotCRMDataExtractandLoadToMongoDb,
+const queueName = 'hubspotCRMQueue '
 
-    { connection : { host : "localhost" , port : 6379} }
-);
 
-const hubspotCRMDataExtractandLoadToMongoDb = async (job) => {
-    console.log("here")
+const {Worker , Queue} = require("bullmq")
+
+
+const processJob = async (job, done) => {
+  
+    console.log("heredata" , job.data.userId)
+    
     const dbCLient = await connect();
     const db = dbCLient.db(job.data.userId);
-    console.log("here")
-    const collection = db.collection(job.data.urlName);
+    console.log("hereDB")
+    const loadPointCollection = db.collection(job.data.urlName);
     console.log("not here")
-    const apiUrl = job.data.urlValue;
+    let apiUrl = job.data.urlValue;
 
     let apiTrigger = true;
 
     while (apiTrigger) {
         try {
-            while_count++;
+        
             const response = await axios({
                 url: apiUrl,
                 method: "get",
@@ -38,7 +42,7 @@ const hubspotCRMDataExtractandLoadToMongoDb = async (job) => {
                 const data = response["data"]["results"];
                 console.log(data.length);
                 console.log("keys of result", Object.keys(response));
-                await dataLoadCollection.insertMany(data);
+                await loadPointCollection.insertMany(data);
                 if (Object.keys(response["data"]).includes("paging")) {
                     apiUrl = response["data"]["paging"]["next"]["link"];
                     console.log("apiurl>>>>>", apiUrl);
@@ -47,6 +51,7 @@ const hubspotCRMDataExtractandLoadToMongoDb = async (job) => {
                 }
             }
         } catch (error) {
+            console.log(error)
             if (
                 JSON.stringify(error.response.status) &&
                 JSON.stringify(error.response.status) == "401"
@@ -56,20 +61,21 @@ const hubspotCRMDataExtractandLoadToMongoDb = async (job) => {
                 console.log("////////NEW TOKENS||||||||||||", newTokens);
 
                 authToken = newTokens["access_token"];
-                await collection.updateOne(
-                    { userId: userId },
-                    { $set: { userId: userId, Hubspot: newTokens } },
+                await db.collection("ThirdPartyAuthDetails").updateOne(
+                    { userId: job.data.userId },
+                    { $set: { userId: job.data.userId, Hubspot: newTokens } },
                     { upsert: true }
                 );
-            }
+                
+                job.data.authToken = authToken
+                job.data.refreshToken = newTokens["refresh_token"]
+                console.log("this is job   refreshed----" , job.data)
+            }   
         }
     }
-};
+}
+const hubspotWorker = new Worker("hubspotCRMQueue" , processJob , {
+    connection : { port: process.env.REDIS_PORT, host: process.env.REDIS_HOST }
+  })
 
-hubspotETLWorker.on("completed", (job) => {
-    console.log(`${job.id} has completed!`);
-});
-
-hubspotETLWorker.on("failed", (job, err) => {
-    console.log(`${job.id} has failed with ${err.message}`);
-});
+module.exports = { hubspotWorker , processJob}

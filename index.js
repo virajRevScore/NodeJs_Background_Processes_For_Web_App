@@ -10,6 +10,8 @@ const  Arena  = require('bull-arena')
 const bullMQ = require("bullmq");
 const {Queue} = require("bullmq");
 
+require('./queues/hubspot/consumer.js')
+
 const redisOptions = { host : "localhost" , port : 6379 }
 
 global.hubspotETLQueue = new Queue("hubspotCRMQueue",  { connection : { host : "localhost" , port : 6379} });

@@ -12,7 +12,9 @@ const { extractHubspotCRMData } = require("../../services/hubspot/hubspot.dataPi
 
 exports.hubspotETLStage1 = async (req , res) => {
    
-    const result = await extractHubspotCRMData( req.query.userId )
-    res.json({ message : "data extraction of HubSpot has begun. Please wait while we curate your dashboard....." , result : result})
+    extractHubspotCRMData( req.query.userId ).then((result) => {
+
+        res.json({ message : `${result} jobs added `})
+    })
 
 }

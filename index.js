@@ -9,6 +9,7 @@ const {MongoClient} = require('mongodb')
 const  Arena  = require('bull-arena')
 const bullMQ = require("bullmq");
 const {Queue} = require("bullmq");
+const { receiveWebhookRequest } = require("./controllers/hubspot/webhook");
 
 require('./queues/hubspot/consumer.js')
 
@@ -38,7 +39,8 @@ const arena = Arena( {
 const sessionStore = new session.MemoryStore() // not for prod . used only for dev env. need to figure out a session store for prod
 
 const app = express();
-app.use('/', arena);
+// app.use('/', arena);
+
 app.use(cookieParser())
 app.use(
   session({
@@ -63,6 +65,10 @@ app.get("/error", (req, res) => {
   res.write(`<h4>Error: ${req.query.msg}</h4>`);
   res.end();
 });
+
+// ---------Hubspopt Webhook ---------------------------------
+app.post("/" , receiveWebhookRequest)
+// ---------Hubspopt Webhook ---------------------------------
 
 app.use("/api/v1/background_processes/", routes);
 

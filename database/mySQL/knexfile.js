@@ -23,7 +23,7 @@ module.exports = {
     connection: {
       database: 'revscore',
       user:     'postgres',
-      password: '12345'
+      password: '123'
     },
     pool: {
       min: 2,

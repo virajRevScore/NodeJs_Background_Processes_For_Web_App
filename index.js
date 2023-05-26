@@ -11,6 +11,8 @@ const bullMQ = require("bullmq");
 const { Queue } = require("bullmq");
 const { receiveWebhookRequest } = require("./controllers/hubspot/webhook");
 const bodyParser = require("body-parser");
+const { sqldb } = require('./database/postgreSQL/knexConfig')
+console.log(sqldb)
 
 require("./queues/hubspot/consumer.js");
 
@@ -19,6 +21,7 @@ const redisOptions = { host: "localhost", port: 6379 };
 global.hubspotETLQueue = new Queue("hubspotCRMQueue", {
     connection: { host: "localhost", port: 6379 },
 });
+
 const arena = Arena(
     {
         BullMQ: Queue,

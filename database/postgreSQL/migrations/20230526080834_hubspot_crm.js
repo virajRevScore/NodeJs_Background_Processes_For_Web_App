@@ -15,7 +15,7 @@ exports.up = async function(knex) {
     table.integer("tenantId")    
     table.timestamps( true , true )
     for(let column_name of contactsPropertiesArray){
-      table.string(column_name)
+      table.text(column_name)
     }
 
 
@@ -26,7 +26,8 @@ exports.up = async function(knex) {
     table.integer("tenantId")    
     table.timestamps( true , true )
     for(let column_name of companiesPropertiesArray){
-      table.string(column_name)
+      table.text(column_name)
+      
     }
 
 
@@ -37,7 +38,7 @@ exports.up = async function(knex) {
     table.integer("tenantId")    
     table.timestamps( true , true )
     for(let column_name of dealsPropertiesArray){
-      table.string(column_name)
+      table.text(column_name)
     }
 
 

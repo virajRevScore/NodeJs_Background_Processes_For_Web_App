@@ -18,6 +18,9 @@ const { Worker, Queue } = require("bullmq");
 const { loadHubspotCRMDataToPostgres } = require("../../services/hubspot/hubspot.dataPipelineStage2");
 const { sqldb } = require("../../database/postgreSQL/knexConfig");
 
+
+// stage 1 extracts data from hubspot and dumps it all into mongodb
+
 const processJobStage1 = async (job, done) => {
     console.log("heredata", job.data.userId);
 
@@ -86,9 +89,12 @@ const processJobStage1 = async (job, done) => {
 };
 
 
+//stage 2 extracts data from mongodb , performs minor transformations and loads it into postgresql
+
 const processJobStage2 = async (job , done) => {
     const transformStream = new Transform({
         objectMode: true,
+        highWaterMark : 100,
         transform: function (doc, encoding, callback) {
           const transformedDoc = doc.properties
           callback(null, transformedDoc);
@@ -100,7 +106,7 @@ const processJobStage2 = async (job , done) => {
     const extractPointCollection = db.collection(job.data.collectionAndTableName);
 
     const cursor = extractPointCollection.find({}).stream()
-    // cursor.pipe(transformStream);
+    cursor.pipe(transformStream);
 
     const pgWritableStream = new Transform({
         objectMode: true,
@@ -113,9 +119,9 @@ const processJobStage2 = async (job , done) => {
             .catch((error) => callback(error));
         },
       });
-    
-      cursor
-        .pipe(transformStream)
+  
+      transformStream
+      .pipe(pgWritableStream)
         .on('data', (data) => {
           if (!pgWritableStream.write(data)) {
             transformStream.pause();

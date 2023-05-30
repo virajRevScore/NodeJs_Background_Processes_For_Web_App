@@ -91,6 +91,9 @@ const processJobStage1 = async (job, done) => {
 
 //stage 2 extracts data from mongodb , performs minor transformations and loads it into postgresql
 
+
+// maybe switch to pipelines insted of pipes ... research needed for best option to use and handle edge cases and errors
+
 const processJobStage2 = async (job , done) => {
     const transformStream = new Transform({
         objectMode: true,

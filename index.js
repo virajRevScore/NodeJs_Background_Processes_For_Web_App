@@ -18,9 +18,21 @@ require("./queues/hubspot/consumer.js");
 
 const redisOptions = { host: "localhost", port: 6379 };
 
-global.hubspotETLQueue = new Queue("hubspotCRMQueue", {
-    connection: { host: "localhost", port: 6379 },
+// global.hubspotETLQueue = new Queue("hubspotCRMQueue", {
+//     connection: { host: "localhost", port: 6379 },
+// });   maybe not needed as worker for queue has been imported above
+const { QueueEvents } = require('bullmq')
+
+const queueEventsStage1 = new QueueEvents('hubspotCRMQueueStage1' , {connection : redisOptions});
+const queueEventsStage2 = new QueueEvents('hubspotCRMQueueStage2' , {connection : redisOptions});
+
+queueEventsStage1.on('completed', ({jobId}) => {
+  console.log("commpleted" +  jobId)
 });
+queueEventsStage2.on('completed', ({jobId}) => {
+  console.log("commpleted222222 ------------------>>>>>>yayyyyyyy" +  jobId)
+});
+
 
 const arena = Arena(
     {

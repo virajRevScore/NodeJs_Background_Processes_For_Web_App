@@ -10,6 +10,7 @@ const { extractHubspotCRMData } = require("../../services/hubspot/hubspot.dataPi
 
 
 
+
 exports.hubspotETLStage1 = async (req , res) => {
    
     extractHubspotCRMData( req.query.userId ).then((result) => {

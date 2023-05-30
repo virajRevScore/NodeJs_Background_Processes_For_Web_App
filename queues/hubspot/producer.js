@@ -11,12 +11,15 @@ const jobOptions = {
 const queueName = 'hubspotCRMQueue'
 
 
-const hubspotCRMQueue = new Queue("hubspotCRMQueue" , {
+const  hubspotCRMQueueStage1 = new Queue("hubspotCRMQueueStage1" , {
+    connection : { port: process.env.REDIS_PORT, host: process.env.REDIS_HOST }
+  })
+const  hubspotCRMQueueStage2 = new Queue("hubspotCRMQueueStage2" , {
     connection : { port: process.env.REDIS_PORT, host: process.env.REDIS_HOST }
   })
 
 
-const addJobsToHubspotCRMQueue =  async (urls , userId, authToken , refreshToken ) => {
+const addJobsToHubspotCRMQueueStage1 =  async (urls , userId, authToken , refreshToken ) => {
     let countJobs = 0
     const totalJobs = urls.length
     console.log(totalJobs)
@@ -31,7 +34,7 @@ const addJobsToHubspotCRMQueue =  async (urls , userId, authToken , refreshToken
             urlName: urlName
         };
         console.log("--payload" , payload)
-        hubspotCRMQueue.add("fetchCRMData&LoadToMongoDB" , payload , jobOptions).then(() => {
+        hubspotCRMQueueStage1.add("fetchCRMData&LoadToMongoDB" , payload , jobOptions).then(() => {
             countJobs++;
             console.log("``````count------" , countJobs)
             
@@ -41,4 +44,16 @@ const addJobsToHubspotCRMQueue =  async (urls , userId, authToken , refreshToken
   
 }
 
-module.exports = { addJobsToHubspotCRMQueue }
+const addJobsToHubspotCRMQueueStage2 = async ( userId , collectionAndTableName) => {
+
+    let payload = {
+        userId : userId,
+        collectionAndTableName : collectionAndTableName
+    }
+
+    return await hubspotCRMQueueStage2.add("etlFromMongoDBToPostgreSQL" , payload , jobOptions ).then(() => {
+        console.log("Job Added to Stage 2. Look out for worker performace and data accuracy in postgres")
+    })
+}
+
+module.exports = { addJobsToHubspotCRMQueueStage1 , addJobsToHubspotCRMQueueStage2 }

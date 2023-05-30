@@ -13,7 +13,7 @@ const { con, connect } = require("../../database/mongoDB/connection");
 const hubspotURLList = require("../../helpers/hubspot/hubspot.dataExtractionURIS.helper.json");
 
 
-const { addJobsToHubspotCRMQueue } = require("../../queues/hubspot/producer");
+const { addJobsToHubspotCRMQueueStage1 } = require("../../queues/hubspot/producer");
 
 
 
@@ -34,7 +34,7 @@ exports.extractHubspotCRMData = async (userId) => {
     let authToken = authList[0]["Hubspot"]["access_token"];
     const refreshToken = authList[0]["Hubspot"]["refresh_token"];
 
-    return await addJobsToHubspotCRMQueue( hubspotURLList["crm"] , userId , authToken , refreshToken)
+    return await addJobsToHubspotCRMQueueStage1( hubspotURLList["crm"] , userId , authToken , refreshToken)
   
    
 
